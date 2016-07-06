@@ -110,13 +110,19 @@ macro(config_compiler_and_linker)
     set(cxx_base_flags "${cxx_base_flags} -DGTEST_HAS_PTHREAD=0")
   endif()
 
+
   # For building gtest's own tests and samples.
   set(cxx_exception "${CMAKE_CXX_FLAGS} ${cxx_base_flags} ${cxx_exception_flags}")
   set(cxx_no_exception
     "${CMAKE_CXX_FLAGS} ${cxx_base_flags} ${cxx_no_exception_flags}")
   set(cxx_default "${cxx_exception}")
   set(cxx_no_rtti "${cxx_default} ${cxx_no_rtti_flags}")
-  set(cxx_use_own_tuple "${cxx_default} -DGTEST_USE_OWN_TR1_TUPLE=1")
+  if(gtest_use_own_tuple)
+    set(cxx_default "${cxx_default} -DGTEST_USE_OWN_TR1_TUPLE=1")
+    set(cxx_use_own_tuple "${cxx_default}")
+  else()
+    set(cxx_use_own_tuple "${cxx_default} -DGTEST_USE_OWN_TR1_TUPLE=1")
+  endif()
 
   # For building the gtest libraries.
   set(cxx_strict "${cxx_default} ${cxx_strict_flags}")
